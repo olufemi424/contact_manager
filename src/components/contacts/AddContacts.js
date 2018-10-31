@@ -55,6 +55,8 @@ class AddContact extends Component {
       address: "",
       errors: {}
     });
+
+    this.props.history.push("/");
   };
 
   //   GENERAL EVENT LISTENER FOR EACH OF THE FORMS
