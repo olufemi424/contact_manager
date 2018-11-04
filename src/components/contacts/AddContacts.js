@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Consumer } from "../../context";
 import TextInputGroup from "../layout/TextInputGroup";
-import uuid from "uuid";
+import axios from "axios";
 
 class AddContact extends Component {
   //SET THE STATE OF THE INPUT FIELDS
@@ -37,15 +37,16 @@ class AddContact extends Component {
 
     // CONSTRUCTING A NEW CONTACT METHOD
     const newContact = {
-      id: uuid(),
       name,
       email,
       phone,
       address
     };
 
+    axios
+      .post("https://jsonplaceholder.typicode.com/users", newContact)
+      .then(res => dispatch({ type: "ADD_CONTACT", payload: res.data }));
     // SEND IN THE NEW CONTACT AS THE PAYLOAD
-    dispatch({ type: "ADD_CONTACT", payload: newContact });
 
     // CLEAR THE FORM FIELDS
     this.setState({
