@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Consumer } from "../../context";
 import axios from "axios";
@@ -44,6 +45,17 @@ class Contact extends Component {
                   className="fas fa-sort-down"
                   style={{ cursor: "pointer" }}
                 />
+                <Link to={`contact/edit/${id}`}>
+                  <i
+                    className="fas fa-pencil-alt"
+                    style={{
+                      cursor: "pointer",
+                      float: "right",
+                      color: "#000",
+                      marginLeft: "1rem"
+                    }}
+                  />
+                </Link>
                 <i
                   className="fas fa-times"
                   style={{ cursor: "pointer", float: "right", color: "red" }}
@@ -54,7 +66,10 @@ class Contact extends Component {
                 <ul className="list-group">
                   <li className="list-group-item">Email: {email}</li>
                   <li className="list-group-item">Phone: {phone}</li>
-                  <li className="list-group-item">Address: {address}</li>
+                  <li className="list-group-item">
+                    Address:
+                    {address.suite} {address.street}
+                  </li>
                 </ul>
               ) : null}
             </div>

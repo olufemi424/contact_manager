@@ -3,21 +3,37 @@ import { Consumer } from "../../context";
 import TextInputGroup from "../layout/TextInputGroup";
 import axios from "axios";
 
-class AddContact extends Component {
+class EditContact extends Component {
   //SET THE STATE OF THE INPUT FIELDS
   state = {
     name: "",
     email: "",
     phone: "",
-    address: "",
+    address: {},
     errors: {}
   };
+
+  async componentDidMount() {
+    const id = this.props.match.params.id;
+    const res = await axios.get(
+      `https://jsonplaceholder.typicode.com/users/${id}`
+    );
+
+    const contact = res.data;
+
+    this.setState({
+      name: contact.name,
+      email: contact.email,
+      phone: contact.phone,
+      address: `${contact.address.street} ${contact.address.suite}`
+    });
+  }
 
   // ON SUBMIT HANDLER
   onSubmit = async (dispatch, e) => {
     e.preventDefault();
 
-    const { name, email, phone, address } = this.state;
+    const { name, email, phone } = this.state;
 
     // CHECK FOR ERRORS
     if (name === "") {
@@ -35,21 +51,17 @@ class AddContact extends Component {
       return;
     }
 
-    // CONSTRUCTING A NEW CONTACT METHOD
-    const newContact = {
-      name,
-      email,
-      phone,
-      address
-    };
+    // PUT REQUEST
+    const updContact = { name, email, phone };
+    const { id } = this.props.match.params;
 
-    const res = await axios.post(
-      "https://jsonplaceholder.typicode.com/users",
-      newContact
+    const res = await axios.put(
+      `https://jsonplaceholder.typicode.com/users/${id}`,
+      updContact
     );
 
-    // SEND IN THE NEW CONTACT AS THE PAYLOAD
-    dispatch({ type: "ADD_CONTACT", payload: res.data });
+    dispatch({ type: "UPDATE_CONTACT", payload: res.data });
+
     // CLEAR THE FORM FIELDS
     this.setState({
       name: "",
@@ -68,6 +80,7 @@ class AddContact extends Component {
   render() {
     //DESTRUCTURING THE STATE INTO RENDER FUNCTION
     const { name, email, phone, address, errors } = this.state;
+    console.log(address);
 
     return (
       <Consumer>
@@ -75,7 +88,7 @@ class AddContact extends Component {
           const { dispatch } = value;
           return (
             <div className="card mb-3">
-              <div className="card-header">Add Contact</div>
+              <div className="card-header">Edit Contact</div>
               <div className="card-body">
                 <form onSubmit={this.onSubmit.bind(this, dispatch)}>
                   <TextInputGroup
@@ -115,7 +128,7 @@ class AddContact extends Component {
                   />
                   <input
                     type="submit"
-                    value="Add Contact"
+                    value="Update Contact"
                     className="btn btn-block btn-light"
                   />
                 </form>
@@ -128,4 +141,4 @@ class AddContact extends Component {
   }
 }
 
-export default AddContact;
+export default EditContact;
